@@ -10,3 +10,8 @@ const userSchema = new mongoose.Schema({
 	resetOtp: { type: String, default: "" },
 	resetOtpExpireAt: { type: Number, default: 0 },
 });
+
+//  Create User Model
+const usermodel = mongoose.models.user || mongoose.model("user", userSchema);
+
+export default usermodel;
