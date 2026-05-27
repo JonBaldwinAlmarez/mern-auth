@@ -103,3 +103,23 @@ export const login = async (req, res) => {
 		});
 	}
 };
+
+// Controller function for user logout
+
+export const logout = async (req, res) => {
+	try {
+		// Clear cookie
+		res.clearCookie("token", {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "strick",
+		});
+
+		return res.json({ success: true, message: "Logged Out" });
+	} catch (error) {
+		return res.json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
