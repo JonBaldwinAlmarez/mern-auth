@@ -8,7 +8,10 @@ export const register = async (req, res) => {
 	// Check Name | Email | Password
 
 	if (!name || !email || !password) {
-		return res.json({ success: false, message: "Missing Details" });
+		return res.status(400).json({
+			success: false,
+			message: "Missing Details",
+		});
 	}
 
 	try {
@@ -16,9 +19,13 @@ export const register = async (req, res) => {
 		const existingUser = await userModel.findOne({
 			email,
 		});
+
 		// Check existing user
 		if (existingUser) {
-			return res.json({ success: false, message: "user already exist" });
+			return res.status(409).json({
+				success: false,
+				message: "user already exist",
+			});
 		}
 
 		// Creat hashed password
@@ -47,9 +54,12 @@ export const register = async (req, res) => {
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 		});
 
-		return res.json({ success: true });
+		return res.status(201).json({ success: true });
 	} catch (error) {
-		res.json({ success: false, message: error.message });
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		});
 	}
 };
 
@@ -61,7 +71,7 @@ export const login = async (req, res) => {
 
 	// email and password validation
 	if (!email || !password) {
-		return res.json({
+		return res.status(400).json({
 			success: false,
 			message: "Provide Email and Password",
 		});
@@ -71,14 +81,20 @@ export const login = async (req, res) => {
 		const user = await userModel.findOne({ email });
 
 		if (!user) {
-			return res.json({ success: false, message: "Invalid Email" });
+			return res.status(401).json({
+				success: false,
+				message: "Invalid Email",
+			});
 		}
 
 		// Get password in DB and Match w/ Password provided
 		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (!isMatch) {
-			return res.json({ success: false, message: "Invalid Password" });
+			return res.status(401).json({
+				success: false,
+				message: "Invalid Password",
+			});
 		}
 
 		/* Create token */
@@ -91,13 +107,13 @@ export const login = async (req, res) => {
 			// Send Property
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
-			sameSite: process.env.NODE_ENV === "production" ? "none" : "strick",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 		});
 
-		return res.json({ success: true });
+		return res.status(200).json({ success: true });
 	} catch (error) {
-		return res.json({
+		return res.status(500).json({
 			success: false,
 			message: error.message,
 		});
@@ -112,12 +128,15 @@ export const logout = async (req, res) => {
 		res.clearCookie("token", {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
-			sameSite: process.env.NODE_ENV === "production" ? "none" : "strick",
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
 		});
 
-		return res.json({ success: true, message: "Logged Out" });
+		return res.status(200).json({
+			success: true,
+			message: "Logged Out",
+		});
 	} catch (error) {
-		return res.json({
+		return res.status(500).json({
 			success: false,
 			message: error.message,
 		});
