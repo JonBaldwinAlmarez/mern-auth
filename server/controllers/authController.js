@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodemailer.js";
 
+// Controller function for register
 export const register = async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -77,7 +78,6 @@ export const register = async (req, res) => {
 };
 
 // Controller function for user login
-
 export const login = async (req, res) => {
 	// Get email and password in req body
 	const { email, password } = req.body;
@@ -134,7 +134,6 @@ export const login = async (req, res) => {
 };
 
 // Controller function for user logout
-
 export const logout = async (req, res) => {
 	try {
 		// Clear cookie
