@@ -331,3 +331,68 @@ export const sendResetOtp = async (req, res) => {
 		});
 	}
 };
+
+// Reset user password
+export const resetPassword = async (req, res) => {
+	// Get otp, user email id and new password
+	const { email, otp, newPassword } = req.body;
+
+	// Checking
+	if (!email || !otp || !newPassword) {
+		return res.status(400).json({
+			success: false,
+			message: "Email, OTP, new password are required",
+		});
+	}
+
+	try {
+		// Find user
+		const user = await userModel.findOne({
+			email,
+		});
+		// Verification
+		if (!user) {
+			return res.status(400).json({
+				success: false,
+				message: "user not found",
+			});
+		}
+
+		if (user.resetOtp === "" || user.resetOtp !== otp) {
+			return res.status(400).json({
+				success: false,
+				message: "Invalid OTP",
+			});
+		}
+
+		// Check expiry
+		if (user.resetOtpExpireAt < Date.now()) {
+			return res.status(401).json({
+				success: false,
+				message: "OTP expired",
+			});
+		}
+		// Encryp password
+		const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+		// Update user password
+		user.password = hashedPassword;
+
+		// Reset OTP and expiry
+		user.resetOtp = "";
+		user.resetOtpExpireAt = 0;
+
+		// Save user
+		await user.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "Password has been reset successfully",
+		});
+	} catch (error) {
+		return res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
