@@ -255,6 +255,8 @@ export const verifyEmail = async (req, res) => {
 			success: true,
 			message: "Email verify successfully",
 		});
+
+		// Created api controller function to verify user account via OTP
 	} catch (error) {
 		return res.status(400).json({
 			success: false,
