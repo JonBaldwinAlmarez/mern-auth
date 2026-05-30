@@ -20,7 +20,7 @@ const userAuth = async (req, res, next) => {
 		// Find ID
 		if (decodedToken.id) {
 			// Add ID in the req body
-			req.body.userId = decodedToken.id;
+			req.userId = decodedToken.id;
 		} else {
 			// return response
 			return res.status(400).json({

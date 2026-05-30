@@ -190,7 +190,7 @@ export const sendVerifyOtp = async (req, res) => {
 
 		res.status(200).json({
 			success: true,
-			message: "Verification OTP snet on email",
+			message: "Verification OTP sent on email",
 		});
 	} catch (error) {
 		res.status(401).json({
@@ -257,6 +257,21 @@ export const verifyEmail = async (req, res) => {
 		});
 
 		// Created api controller function to verify user account via OTP
+	} catch (error) {
+		return res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// Check if user is authenticated
+// Api that will check if user is login or logout
+export const isAuthenticated = async (req, res) => {
+	try {
+		return res.status(200).json({
+			success: true,
+		});
 	} catch (error) {
 		return res.status(400).json({
 			success: false,
