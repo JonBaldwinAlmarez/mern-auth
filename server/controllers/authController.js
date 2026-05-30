@@ -155,3 +155,110 @@ export const logout = async (req, res) => {
 		});
 	}
 };
+
+// Send verification OTP to the user's email
+export const sendVerifyOtp = async (req, res) => {
+	try {
+		const { userId } = req.body;
+		const user = await userModel.findById(userId);
+
+		if (user.isAccountVerified) {
+			return res.json({
+				success: false,
+				message: "Account already verified",
+			});
+		}
+		// Generate OTP to be send to user
+		const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+		// Save OTP to data based
+		user.verifyOtp = otp;
+		// verifyOtpExpireAt expire 1 day  from the current date and time
+		user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+
+		// Save user to data based
+		await user.save();
+
+		// Send OTP to email
+		const mailOption = {
+			from: process.env.SENDER_EMAIL,
+			to: user.email,
+			subject: "Account Verification ORT",
+			text: `Your OTP is ${otp}. Verify your account using this OTP`,
+		};
+		await transporter.sendMail(mailOption);
+
+		res.status(200).json({
+			success: true,
+			message: "Verification OTP snet on email",
+		});
+	} catch (error) {
+		res.status(401).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// Get OTP and Verify user account
+
+export const verifyEmail = async (req, res) => {
+	// Get user ID and otp
+	const { userId, otp } = req.body;
+
+	//Check
+	if (!userId || !otp) {
+		res.status(404).json({ success: false, message: "Missing Details" });
+	}
+
+	try {
+		//Find user
+		const user = await userModel.findById(userId);
+
+		// User validation
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: "User not found",
+			});
+		}
+
+		// Verify OTP
+
+		if (user.verifyOtp === "" || user.verifyOtp !== otp) {
+			return res.status(401).json({
+				success: false,
+				message: "Invalid OTP",
+			});
+		}
+
+		// Check expire date
+		if (user.verifyOtpExpireAt < Date.now()) {
+			return res.status(401).json({
+				success: false,
+				message: " OTP Expired",
+			});
+		}
+
+		// Verify user account
+		user.isAccountVerified = true;
+
+		// Reset verifyOtp and verifyOtpExpireAt
+		user.verifyOtp = "";
+		user.verifyOtpExpireAt = 0;
+
+		// Save user date
+		await user.save();
+
+		// Return response
+		return res.status(200).json({
+			success: true,
+			message: "Email verify successfully",
+		});
+	} catch (error) {
+		return res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
