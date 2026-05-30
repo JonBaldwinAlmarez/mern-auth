@@ -279,3 +279,55 @@ export const isAuthenticated = async (req, res) => {
 		});
 	}
 };
+
+// Send password to reset OTP
+export const sendResetOtp = async (req, res) => {
+	// get email ID from request body
+	const { email } = req.body;
+	// User validation
+	if (!email) {
+		return res.status(400).json({
+			success: false,
+			message: "Email is required",
+		});
+	}
+
+	try {
+		//Find user
+		const user = await userModel.findOne({ email });
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: "User not found",
+			});
+		}
+
+		// Generate OTP
+		const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+		user.resetOtp = otp;
+		user.resetOtpExpireAt = Date.now() + 15 * 60 * 60 * 1000;
+
+		await user.save(); // Save to data base
+
+		// Set message email
+		const mailOption = {
+			from: process.env.SENDER_EMAIL,
+			to: user.email,
+			subject: "Account Verification OTP",
+			text: `Your OTP resetting your password ${otp}. Use this OTP to proceed with resetting your password`,
+		};
+		// Send email
+		await transporter.sendMail(mailOption);
+
+		return res.status(200).json({
+			success: true,
+			message: "OTP sent to your email",
+		});
+	} catch (error) {
+		return res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
