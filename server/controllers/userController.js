@@ -2,11 +2,12 @@ import userModel from "../models/userModel.js";
 
 export const getUserData = async (req, res) => {
 	try {
-		const { userId } = req.userId;
-
+		const userId = req.userId;
+		//console.log("req.userId:", req.userId);
 		// Find user
 		const user = await userModel.findById(userId);
 
+		console.log("user:", user);
 		// Validation
 		if (!user) {
 			return res.status(401).json({
