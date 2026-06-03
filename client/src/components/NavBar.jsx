@@ -6,7 +6,7 @@ const NavBar = () => {
 			<Camera size={48} color="red" strokeWidth={1} className="w-28 sm:w-32" />
 			<button
 				className="flex items-center gap-2 border border-gray-500 rounded-full
-			 py-6 px-2 text-gray-800 hover:bg-gray-100 transition-all"
+			 py-3 px-2 text-gray-800 hover:bg-gray-100 transition-all cursor-pointer"
 			>
 				Login <ArrowBigRight />
 			</button>
