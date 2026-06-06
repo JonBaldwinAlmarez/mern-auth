@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const AppContext = createContext(); // Create a context for the app
@@ -9,16 +9,36 @@ export const AppContextProvider = (props) => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userData, setUserData] = useState("");
 
+	// Check auth status
+	const getAuthStatus = async () => {
+		try {
+			// API call of isAuth API end point
+			const { data } = await axios.get(backendUrl + "/api/auth/is-auth");
+			// Set login
+			if (data) {
+				setIsLoggedIn(true); // User is login
+				getUserData(); // get user data
+			}
+		} catch (error) {
+			toast.error(error);
+			console.log("Error:	", error);
+		}
+	};
+
 	// Get user data
 	const getUserData = async () => {
 		try {
 			const { data } = await axios.get(backendUrl + "/api/user/data");
 			data.success ? setUserData(data.userData) : toast.error(data.message);
 		} catch (error) {
-			toast.error(error);
+			toast.error(error.message);
 			console.log("Error:	", error);
 		}
 	};
+
+	useEffect(() => {
+		getAuthStatus();
+	}, []);
 
 	const value = {
 		backendUrl,
