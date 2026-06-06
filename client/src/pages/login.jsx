@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 const Login = () => {
 	const navigate = useNavigate();
 
-	const { backendUrl, setIsLoggedIn } = useContext(AppContext);
+	const { backendUrl, setIsLoggedIn, getUserData } = useContext(AppContext);
 
 	const [state, setState] = useState("Sign up");
 	const [name, setName] = useState("");
@@ -34,12 +34,13 @@ const Login = () => {
 				// Check response data
 				if (data.success) {
 					setIsLoggedIn(true);
+					getUserData();
 					navigate("/");
 				} else {
 					toast.error(data.message);
 				}
 			} else {
-				// Hit user logggin API
+				// Hit user logggin API call
 
 				const { data } = await axios.post(backendUrl + "/api/auth/login", {
 					email,
@@ -49,6 +50,7 @@ const Login = () => {
 				// Check response data
 				if (data.success) {
 					setIsLoggedIn(true);
+					getUserData();
 					navigate("/");
 					toast.success("TOAST TEST");
 				} else {
