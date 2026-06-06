@@ -1,14 +1,68 @@
 import { Image, Lock, Mail } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Login = () => {
 	const navigate = useNavigate();
+
+	const { backendUrl, setIsLoggedIn } = useContext(AppContext);
 
 	const [state, setState] = useState("Sign up");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+
+	const onSubmitHandler = async (e) => {
+		try {
+			e.preventDefault(); // Prevent default reload
+			console.log("Form submitted");
+			// Send cookie
+			axios.defaults.withCredentials = true;
+
+			// Check status Sign up or login
+			if (state === "Sign up") {
+				// Hit user registration API
+				const { data } = await axios.post(backendUrl + "/api/auth/register", {
+					name,
+					email,
+					password,
+				}); // make API call
+
+				// Check response data
+				if (data.success) {
+					setIsLoggedIn(true);
+					navigate("/");
+				} else {
+					toast.error(data.message);
+				}
+			} else {
+				// Hit user logggin API
+
+				const { data } = await axios.post(backendUrl + "/api/auth/login", {
+					email,
+					password,
+				}); // make API call
+
+				// Check response data
+				if (data.success) {
+					setIsLoggedIn(true);
+					navigate("/");
+					toast.success("TOAST TEST");
+				} else {
+					toast.error(data.message);
+				}
+			}
+		} catch (error) {
+			console.log("ERROR RESPONSE:", error.response?.data);
+
+			toast.error(
+				error.response?.data?.message || error.message || "Login failed",
+			);
+		}
+	};
 
 	return (
 		<div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-linear-to-br from-gray-100 to-gray-500">
@@ -24,7 +78,7 @@ const Login = () => {
 					{state === "Sign up" ? "Create Account" : "Login"}
 				</p>
 
-				<form>
+				<form onSubmit={onSubmitHandler}>
 					{state === "Sign up" && (
 						<div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
 							<Image />
