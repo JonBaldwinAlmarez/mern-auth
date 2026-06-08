@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+axios.defaults.withCredentials = true;
 
 export const AppContext = createContext(); // Create a context for the app
 
@@ -13,26 +14,28 @@ export const AppContextProvider = (props) => {
 	const getAuthStatus = async () => {
 		try {
 			// API call of isAuth API end point
-			const { data } = await axios.get(backendUrl + "/api/auth/is-auth");
+			const { data } = await axios.get(backendUrl + "/api/user/data", {
+				withCredentials: true,
+			});
 			// Set login
-			if (data) {
+			if (data.success) {
 				setIsLoggedIn(true); // User is login
 				getUserData(); // get user data
 			}
 		} catch (error) {
-			toast.error(error);
-			console.log("Error:	", error);
+			toast.error(error.response?.data?.message || error.message);
 		}
 	};
 
 	// Get user data
 	const getUserData = async () => {
 		try {
-			const { data } = await axios.get(backendUrl + "/api/user/data");
+			const { data } = await axios.get(backendUrl + "/api/user/data", {
+				withCredentials: true,
+			});
 			data.success ? setUserData(data.userData) : toast.error(data.message);
 		} catch (error) {
-			toast.error(error.message);
-			console.log("Error:	", error);
+			toast.error(error.response?.data?.message || error.message);
 		}
 	};
 
