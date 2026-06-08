@@ -25,6 +25,26 @@ const NavBar = () => {
 		}
 	};
 
+	const sendVerificationOtp = async () => {
+		try {
+			axios.defaults.withCredentials = true;
+			// API call to send verification OTP api endpoint
+			const { data } = await axios.post(
+				backendUrl + "/api/auth/send-verify-otp",
+			);
+			if (data.success) {
+				// Navigate user to email page /email-verify
+				navigate("/email-verify");
+				toast.success(data.message);
+			} else {
+				toast.error(data.message);
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error(error.message);
+		}
+	};
+
 	return (
 		<div className="w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0">
 			<Camera size={48} color="red" strokeWidth={1} className="w-28 sm:w-32" />
@@ -34,7 +54,10 @@ const NavBar = () => {
 					<div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded-full pt-10">
 						<ul className="list-none m-0 p-2 bg-gray-100 text-sm">
 							{!userData.isAccountVerified && (
-								<li className="py-1 px-2 hover:bg-gray-200 cursor-pointer">
+								<li
+									onClick={sendVerificationOtp}
+									className="py-1 px-2 hover:bg-gray-200 cursor-pointer"
+								>
 									Verify Email
 								</li>
 							)}
