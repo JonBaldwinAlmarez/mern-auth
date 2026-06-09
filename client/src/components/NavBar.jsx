@@ -15,10 +15,10 @@ const NavBar = () => {
 			axios.defaults.withCredentials = true;
 			// Make API call & get data
 			const { data } = await axios.post(backendUrl + "/api/auth/logout");
-			navigate("/");
 
 			data.success && setIsLoggedIn(false);
 			data.success && setUserData(false);
+			navigate("/");
 		} catch (error) {
 			console.log(error);
 			toast.error(error.message);
