@@ -14,9 +14,7 @@ export const AppContextProvider = (props) => {
 	const getAuthStatus = async () => {
 		try {
 			// API call of isAuth API end point
-			const { data } = await axios.get(backendUrl + "/api/user/data", {
-				withCredentials: true,
-			});
+			const { data } = await axios.get(backendUrl + "/api/user/data");
 			// Set login
 			if (data.success) {
 				setIsLoggedIn(true); // User is login
@@ -30,9 +28,7 @@ export const AppContextProvider = (props) => {
 	// Get user data
 	const getUserData = async () => {
 		try {
-			const { data } = await axios.get(backendUrl + "/api/user/data", {
-				withCredentials: true,
-			});
+			const { data } = await axios.get(backendUrl + "/api/user/data");
 			data.success ? setUserData(data.userData) : toast.error(data.message);
 		} catch (error) {
 			toast.error(error.response?.data?.message || error.message);
