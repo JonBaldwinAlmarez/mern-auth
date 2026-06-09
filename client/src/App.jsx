@@ -11,7 +11,7 @@ const App = () => {
 		<div>
 			<ToastContainer />
 			<Routes>
-				{/*Home Path*/}
+				{/*Home Paths*/}
 				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/email-verify" element={<EmailVerify />} />

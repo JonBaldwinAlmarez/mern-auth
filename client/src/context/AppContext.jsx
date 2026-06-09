@@ -49,7 +49,7 @@ export const AppContextProvider = (props) => {
 	};
 
 	return (
-		// Provide the context value to the children components
+		// Provide the context value to the childrens components
 		<AppContext.Provider value={value}>{props.children}</AppContext.Provider>
 	);
 };
