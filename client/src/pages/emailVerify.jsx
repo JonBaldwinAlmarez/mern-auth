@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Camera } from "lucide-react";
+import axios from "axios";
+import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const EmailVerify = () => {
 	// Store OTP
+	axios.defaults.withCredentials = true; // Add cookies in the request
+	const { backendUrl, isLoggedIn, userData, getUserData } =
+		useContext(AppContext);
+
+	const navigate = useNavigate();
 	const inputRefs = React.useRef([]);
 
 	const handleInput = (e, index) => {
@@ -29,10 +38,40 @@ const EmailVerify = () => {
 		});
 	};
 
+	const submitHandler = async (e) => {
+		try {
+			e.preventDefault(); // Prevent default Loading during submit
+			const otparray = inputRefs.current.map((e) => {
+				e.value;
+			}); // get OTP
+
+			const otp = otparray.join("");
+			// Send otp to backend API
+			const { data } = await axios.post(
+				backendUrl + "/api/auth/verify-account",
+				{ otp },
+			);
+
+			if (data.success) {
+				toast.success(data.message);
+				getUserData(); // get user data
+				navigate("/");
+			} else {
+				toast.error(data.message);
+			}
+		} catch (error) {
+			console.log(error);
+			toast.error(error.message);
+		}
+	};
+
 	return (
 		<div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-linear-to-br from-gray-100 to-gray-500">
 			<Camera className="absolute left-5 sm:left-20 top-5 sm:w-32 cursor-pointer" />
-			<form className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+			<form
+				onSubmit={submitHandler}
+				className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
+			>
 				<h1 className="text-white text-2xl font-semibold text-center mb-4">
 					Email verify OTP
 				</h1>
