@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Camera } from "lucide-react";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
@@ -52,7 +52,7 @@ const EmailVerify = () => {
 			if (data.success) {
 				toast.success(data.message);
 				getUserData(); // get user data
-				navigate("/");
+				navigate("/"); // Redirect to home page
 			} else {
 				toast.error(data.message);
 			}
@@ -61,6 +61,11 @@ const EmailVerify = () => {
 			toast.error(error.message);
 		}
 	};
+
+	// Redirect User if verified
+	useEffect(() => {
+		isLoggedIn && userData && userData.isAccountVerified && navigate("/");
+	}, [isLoggedIn, userData]);
 
 	return (
 		<div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-linear-to-br from-gray-100 to-gray-500">
