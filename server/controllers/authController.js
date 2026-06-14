@@ -209,7 +209,8 @@ export const sendVerifyOtp = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
 	// Get user ID and otp
-	const { userId, otp } = req.body;
+	const { otp } = req.body;
+	const userId = req.userId;
 
 	//Check
 	if (!userId || !otp) {

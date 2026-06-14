@@ -41,11 +41,8 @@ const EmailVerify = () => {
 	const submitHandler = async (e) => {
 		try {
 			e.preventDefault(); // Prevent default Loading during submit
-			const otparray = inputRefs.current.map((e) => {
-				e.value;
-			}); // get OTP
-
-			const otp = otparray.join("");
+			const otpArray = inputRefs.current.map((input) => input?.value || "");
+			const otp = otpArray.join("");
 			// Send otp to backend API
 			const { data } = await axios.post(
 				backendUrl + "/api/auth/verify-account",
