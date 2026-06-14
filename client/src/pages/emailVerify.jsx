@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 const EmailVerify = () => {
 	// Store OTP
-	axios.defaults.withCredentials = true; // Add cookies in the request
 	const { backendUrl, isLoggedIn, userData, getUserData } =
 		useContext(AppContext);
 
@@ -65,7 +64,7 @@ const EmailVerify = () => {
 	// Redirect User if verified
 	useEffect(() => {
 		isLoggedIn && userData && userData.isAccountVerified && navigate("/");
-	}, [isLoggedIn, userData]);
+	}, [isLoggedIn, userData, navigate]);
 
 	return (
 		<div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-linear-to-br from-gray-100 to-gray-500">
