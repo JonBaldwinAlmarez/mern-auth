@@ -1,12 +1,17 @@
 import { Image, LockIcon, Mail } from "lucide-react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
+	const { backendUrl } = useContext(AppContext);
+
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [newPassword, setNewPassword] = useState("");
-	const [isEmailSent, setIsEmailSent] = useState("");
+	const [isEmailSent, setIsEmailSent] = useState(false);
 	const [otp, setOtp] = useState(0);
 	const [isOtpSubmitted, setIsOtpSubmitted] = useState(false);
 	const inputRefs = React.useRef([]);
@@ -34,6 +39,57 @@ const ResetPassword = () => {
 			}
 		});
 	};
+
+	// Submit email input field
+	const onSubmitEmail = async (e) => {
+		e.preventDefault();
+
+		// Make API Call
+		try {
+			const { data } = await axios.post(
+				backendUrl + "/api/auth/send-reset-otp",
+				{ email },
+			);
+			// Check api call
+			data.success ? toast.success(data.message) : toast.error(data.message);
+			data.success && setIsEmailSent(true);
+		} catch (error) {
+			console.log(error);
+			toast.error(error);
+		}
+	};
+
+	const onSubmitOtp = async (e) => {
+		e.preventDefault();
+		const otpArray = inputRefs.current.map((e) => e.value);
+		setOtp(otpArray.join("")); // Stored OTP in state variable
+		setIsOtpSubmitted(true); // OTP submited true
+	};
+
+	const onSubmitNewPassword = async (e) => {
+		e.preventDefault();
+		try {
+			// send email, OTP, password
+
+			const { data } = await axios.post(
+				backendUrl + "/api/auth/reset-password",
+				{
+					email,
+					otp,
+					newPassword,
+				},
+			);
+			// Check
+			data.success ? toast.success(data.message) : toast.error(data.message);
+
+			// Redirect Back to login
+			data.success && navigate("/login");
+		} catch (error) {
+			console.log(error);
+			toast.error(error.message);
+		}
+	};
+
 	return (
 		<div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-200 to-purple-400">
 			<Image
@@ -44,7 +100,10 @@ const ResetPassword = () => {
 			{/* Display this form by default */}
 
 			{!isEmailSent && (
-				<form className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+				<form
+					onSubmit={onSubmitEmail}
+					className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
+				>
 					<h1 className="text-white text-2xl font-semibold text-center mb-4">
 						Reset Password
 					</h1>
@@ -71,7 +130,10 @@ const ResetPassword = () => {
 			{/* OTP input form */}
 			{/* Only display if OTP is not submitted & Email is sent*/}
 			{!isOtpSubmitted && isEmailSent && (
-				<form className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+				<form
+					onSubmit={onSubmitOtp}
+					className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
+				>
 					<h1 className="text-white text-2xl font-semibold text-center mb-4">
 						Reset Password OTP
 					</h1>
@@ -106,7 +168,10 @@ const ResetPassword = () => {
 			{/* Enter New Password Form */}
 			{/* display If OTP is submited & if email is sent*/}
 			{isOtpSubmitted && isEmailSent && (
-				<form className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+				<form
+					onSubmit={onSubmitNewPassword}
+					className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
+				>
 					<h1 className="text-white text-2xl font-semibold text-center mb-4">
 						Reset Password
 					</h1>
