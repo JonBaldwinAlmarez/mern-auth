@@ -6,10 +6,8 @@ const userAuth = async (req, res, next) => {
 
 	// Check token
 	if (!token) {
-		return res.status(400).json({
-			success: false,
-			message: "Not authorize, Login again",
-		});
+		// Allow request to proceed - controller will handle unauthenticated case
+		return next();
 	}
 
 	// Decode token from cookie
@@ -29,7 +27,7 @@ const userAuth = async (req, res, next) => {
 		}
 		next(); // call controller function sendVerifyOtp()
 	} catch (error) {
-		return res.status(400).json({
+		return res.status(401).json({
 			success: false,
 			message: error.message,
 		});

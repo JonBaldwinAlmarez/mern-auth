@@ -21,7 +21,11 @@ export const AppContextProvider = (props) => {
 				getUserData(); // get user data
 			}
 		} catch (error) {
-			toast.error(error.response?.data?.message || error.message);
+			if (error.response?.status === 401) {
+				setIsLoggedIn(false);
+			} else {
+				toast.error(error.response?.data?.message || error.message);
+			}
 		}
 	};
 
