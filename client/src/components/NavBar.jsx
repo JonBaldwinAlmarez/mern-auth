@@ -1,4 +1,4 @@
-import { ArrowBigRight, Camera } from "lucide-react";
+import { ArrowBigRight, Image } from "lucide-react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
@@ -47,7 +47,7 @@ const NavBar = () => {
 
 	return (
 		<div className="w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0">
-			<Camera size={48} color="red" strokeWidth={1} className="w-28 sm:w-32" />
+			<Image size={48} color="red" strokeWidth={1} className="w-28 sm:w-32" />
 			{userData ? (
 				<div className="w-8 h-8 flex items-center justify-center rounded-full bg-black text-white relative group">
 					{userData.name[0].toUpperCase()}
