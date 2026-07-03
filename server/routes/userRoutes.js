@@ -2,11 +2,12 @@ import express from "express";
 import userAuth from "../middleware/userAuth.js";
 import { deleteUser, getUserData } from "../controllers/userController.js";
 
-// Create router
+// Router for user-related endpoints that require authentication.
 const userRouter = express.Router();
 
-// Create endpoint
+// Get the authenticated user's profile details.
 userRouter.get("/data", userAuth, getUserData);
+// Delete the authenticated user's account and clear the auth cookie.
 userRouter.delete("/delete", userAuth, deleteUser);
 
 export default userRouter;

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+// Define the data shape for a user account in MongoDB.
+// This schema includes fields for password reset and email verification state.
 const userSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	email: { type: String, required: true, unique: true },

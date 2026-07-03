@@ -5,8 +5,9 @@ import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+// Page component for verifying the user's email address using a one-time code.
 const EmailVerify = () => {
-	// Store OTP
+	// Shared app data and helpers used to verify the user and update auth state.
 	const { backendUrl, isLoggedIn, userData, getUserData } =
 		useContext(AppContext);
 
@@ -39,7 +40,7 @@ const EmailVerify = () => {
 
 	const submitHandler = async (e) => {
 		try {
-			e.preventDefault(); // Prevent default Loading during submit
+			e.preventDefault(); // Prevent the browser from reloading the page.
 			const otpArray = inputRefs.current.map((input) => input?.value || "");
 			const otp = otpArray.join("");
 			// Send otp to backend API

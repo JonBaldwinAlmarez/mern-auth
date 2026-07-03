@@ -1,16 +1,18 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+// Send cookies with every axios request so the backend can read the auth token.
 axios.defaults.withCredentials = true;
 
-export const AppContext = createContext(); // Create a context for the app
+// Shared application state for authentication and user profile data.
+export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
 	const backendUrl = import.meta.env.VITE_BACKEND_URL; // Get the backend URL from environment variables
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userData, setUserData] = useState("");
 
-	// Check auth status
+	// Check authentication status on app startup.
 	const getAuthStatus = async () => {
 		try {
 			// API call of isAuth API end point
@@ -29,7 +31,7 @@ export const AppContextProvider = (props) => {
 		}
 	};
 
-	// Get user data
+	// Fetch the current user's profile details from the server.
 	const getUserData = async () => {
 		try {
 			const { data } = await axios.get(backendUrl + "/api/user/data");

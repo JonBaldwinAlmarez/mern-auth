@@ -3,7 +3,15 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodemailer.js";
 
-// Controller function for register
+/*
+	Register a new user account:
+	- validate required fields
+	- check whether the email is already registered
+	- hash the password securely
+	- persist the user in MongoDB
+	- issue a JWT and set it as an httpOnly cookie
+	- send a welcome email after successful registration
+*/
 export const register = async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -77,7 +85,13 @@ export const register = async (req, res) => {
 	}
 };
 
-// Controller function for user login
+/*
+	Authenticate an existing user:
+	- validate credentials
+	- find the user by email
+	- compare the submitted password with the stored hash
+	- issue a JWT cookie on successful sign in
+*/
 export const login = async (req, res) => {
 	// Get email and password in req body
 	const { email, password } = req.body;
@@ -133,7 +147,10 @@ export const login = async (req, res) => {
 	}
 };
 
-// Controller function for user logout
+/*
+	Log the user out by clearing the auth cookie.
+	This prevents the browser from sending the JWT on subsequent requests.
+*/
 export const logout = async (req, res) => {
 	try {
 		// Clear cookie
@@ -155,7 +172,10 @@ export const logout = async (req, res) => {
 	}
 };
 
-// Send verification OTP to the user's email
+/*
+	Send a one-time verification code (OTP) to the authenticated user's email.
+	This lets the backend verify the account before granting full access.
+*/
 export const sendVerifyOtp = async (req, res) => {
 	try {
 		const user = await userModel.findById(req.userId);
@@ -205,8 +225,10 @@ export const sendVerifyOtp = async (req, res) => {
 	}
 };
 
-// Get OTP and Verify user account
-
+/*
+	Verify the user's email by checking the submitted OTP against the stored code.
+	If the code is valid and not expired, mark the account as verified.
+*/
 export const verifyEmail = async (req, res) => {
 	// Get user ID and otp
 	const { otp } = req.body;
@@ -271,8 +293,10 @@ export const verifyEmail = async (req, res) => {
 	}
 };
 
-// Check if user is authenticated
-// Api that will check if user is login or logout
+/*
+	Return a positive response when the request is authenticated.
+	This endpoint is used by the frontend to confirm the current login state.
+*/
 export const isAuthenticated = async (req, res) => {
 	try {
 		return res.status(200).json({
@@ -286,7 +310,10 @@ export const isAuthenticated = async (req, res) => {
 	}
 };
 
-// Send password to reset OTP
+/*
+	Create and email a password reset OTP.
+	The user must submit this OTP before they can set a new password.
+*/
 export const sendResetOtp = async (req, res) => {
 	// get email ID from request body
 	const { email } = req.body;
@@ -338,7 +365,10 @@ export const sendResetOtp = async (req, res) => {
 	}
 };
 
-// Reset user password
+/*
+	Reset the user's password after OTP verification.
+	This updates the stored password hash and invalidates the old reset token.
+*/
 export const resetPassword = async (req, res) => {
 	// Get otp, user email id and new password
 	const { email, otp, newPassword } = req.body;

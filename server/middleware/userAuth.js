@@ -1,16 +1,15 @@
-// Find token from the cookie then from token fin user ID
+// Middleware to authenticate requests using the JWT stored in cookies.
 import jwt from "jsonwebtoken";
 
 const userAuth = async (req, res, next) => {
 	const { token } = req.cookies; // Get token from cookie
 
-	// Check token
+	// If there is no auth cookie, move on and let the route decide.
 	if (!token) {
-		// Allow request to proceed - controller will handle unauthenticated case
 		return next();
 	}
 
-	// Decode token from cookie
+	// Try to verify the token and populate req.userId for later controllers.
 	try {
 		const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 

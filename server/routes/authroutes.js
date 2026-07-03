@@ -11,6 +11,8 @@ import {
 } from "../controllers/authController.js";
 import userAuth from "../middleware/userAuth.js";
 
+// Router for authentication-related endpoints.
+// These routes handle user registration, login, logout, email verification, and password reset.
 const authRouter = express.Router();
 
 authRouter.post("/register", register);

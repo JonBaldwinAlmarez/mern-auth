@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 const Login = () => {
 	const navigate = useNavigate();
 
+	// Pull shared values from app context so we can call APIs and update auth state.
 	const { backendUrl, setIsLoggedIn, getUserData } = useContext(AppContext);
 
+	// Local form state: whether the form is in sign-up mode or login mode.
 	const [state, setState] = useState("Sign up");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");

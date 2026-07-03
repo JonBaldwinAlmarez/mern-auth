@@ -6,12 +6,14 @@ import ResetPassword from "./pages/ResetPassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Root React component that wires up client-side routing and notification support.
 const App = () => {
 	return (
 		<div>
-			<ToastContainer />
+			<ToastContainer />{" "}
+			{/* Global toast container used by react-toastify for success/error messages */}
 			<Routes>
-				{/*Home Paths*/}
+				{/* Application routes for each page */}
 				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/email-verify" element={<EmailVerify />} />

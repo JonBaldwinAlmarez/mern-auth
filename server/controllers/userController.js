@@ -1,5 +1,6 @@
 import userModel from "../models/userModel.js";
 
+// Controller to return authenticated user profile details.
 export const getUserData = async (req, res) => {
 	try {
 		const userId = req.userId;
@@ -31,6 +32,7 @@ export const getUserData = async (req, res) => {
 	}
 };
 
+// Controller to delete the authenticated user's account and clear auth cookies.
 export const deleteUser = async (req, res) => {
 	try {
 		// Check User ID

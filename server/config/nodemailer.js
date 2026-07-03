@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-// Node mailer configuration
+// Configure the SMTP transporter used to send emails from the backend.
 const transporter = nodemailer.createTransport({
 	host: "smtp-relay.brevo.com",
 	port: 587,

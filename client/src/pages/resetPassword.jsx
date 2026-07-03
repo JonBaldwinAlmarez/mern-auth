@@ -5,10 +5,14 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+// Page component for resetting a forgotten password.
+// The flow includes requesting an OTP, entering it, and choosing a new password.
 const ResetPassword = () => {
 	const { backendUrl } = useContext(AppContext);
 
+	// Navigation helper to redirect the user between pages.
 	const navigate = useNavigate();
+	// Form fields and UI flow state for the reset password process.
 	const [email, setEmail] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [isEmailSent, setIsEmailSent] = useState(false);
@@ -62,8 +66,9 @@ const ResetPassword = () => {
 	const onSubmitOtp = async (e) => {
 		e.preventDefault();
 		const otpArray = inputRefs.current.map((e) => e.value);
-		setOtp(otpArray.join("")); // Stored OTP in state variable
-		setIsOtpSubmitted(true); // OTP submited true
+		// Combine the six OTP inputs into a single string for submission.
+		setOtp(otpArray.join(""));
+		setIsOtpSubmitted(true); // Move the UI to the new password form.
 	};
 
 	const onSubmitNewPassword = async (e) => {
