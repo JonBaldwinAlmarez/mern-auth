@@ -12,7 +12,10 @@ const port = process.env.PORT || 5000;
 // Connect to MongoDB before handling any requests.
 connectDB();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+	"http://localhost:5173",
+	"https://mern-auth-dgg5.onrender.com",
+];
 
 // Parse JSON payloads from client requests.
 app.use(express.json());
