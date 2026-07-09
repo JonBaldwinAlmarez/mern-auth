@@ -48,25 +48,6 @@ app.use(
 	}),
 );
 
-// Purpose: Handle CORS preflight (OPTIONS) requests before the actual request is sent.
-
-app.options(
-	"*", // Apply this CORS configuration to all routes.
-	cors({
-		// Check if the request comes from an allowed origin.
-		origin: (origin, callback) => {
-			// Allow requests with no origin (e.g., Postman) or from trusted websites.
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true); // Approve the request.
-			} else {
-				callback(new Error("Not allowed by CORS")); // Reject the request.
-			}
-		},
-
-		credentials: true, // Allow cookies and authentication credentials.
-	}),
-);
-
 /* API end points */
 app.get("/", (req, res) => {
 	res.send("Server is running");
