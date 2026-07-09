@@ -14,7 +14,11 @@ const NavBar = () => {
 		try {
 			axios.defaults.withCredentials = true;
 			// Make API call & get data
-			const { data } = await axios.post(backendUrl + "/api/auth/logout");
+			const { data } = await axios.post(
+				backendUrl + "/api/auth/logout",
+				{},
+				{ withCredentials: true },
+			);
 
 			data.success && setIsLoggedIn(false);
 			data.success && setUserData(false);
@@ -31,6 +35,8 @@ const NavBar = () => {
 			// API call to send verification OTP api endpoint
 			const { data } = await axios.post(
 				backendUrl + "/api/auth/send-verify-otp",
+				{},
+				{ withCredentials: true },
 			);
 			if (data.success) {
 				// Navigate user to email page /email-verify
