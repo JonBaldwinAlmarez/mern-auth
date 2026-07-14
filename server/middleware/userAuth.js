@@ -6,7 +6,10 @@ const userAuth = async (req, res, next) => {
 
 	// If there is no auth cookie, move on and let the route decide.
 	if (!token) {
-		return next();
+		return res.status(401).json({
+			success: false,
+			message: "Not Authorized",
+		});
 	}
 
 	// Try to verify the token and populate req.userId for later controllers.
